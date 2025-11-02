@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Lambda function with Docker runtime'
+
+Parameters:
+  Stage:
+    Type: String
+    AllowedValues:
+      - v1
+      - v2
+    Default: v1
+
+
+Resources:
+  FastAPIGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: api-with-lambda-docker-runtime
+      StageName: !Ref Stage
+
+  FastAPIFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: lambda-with-docker-runtime
+      PackageType: Image
+      Environment:
+        Variables:
+          TEST: "Test variables"
+      LoggingConfig:
+        LogGroup: /aws/lambda/lambda-with-docker-runtime
+      Timeout: 30
+      MemorySize: 512
+      Events:
+        RestApiAllChildPaths:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+            RestApiId: !Ref FastAPIGateway
+    Metadata:
+      DockerTag: python3.12-v1
+      DockerContext: ./
+      Dockerfile: Dockerfile
+
+  FastApiFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${FastApiFunction}
+      RetentionInDays: 14
+
+Outputs:
+  FastAPIGateway:
+    Value: !Ref FastAPIGateway
+  FastAPIFunction:
+    Value: !GetAtt FastAPIFunction.Arn
+  FastAPIFunctionIamRole:
+    Value: !GetAtt FastAPIFunction.Arn
