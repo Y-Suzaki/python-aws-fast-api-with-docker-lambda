@@ -26,8 +26,8 @@ Resources:
       Environment:
         Variables:
           TEST: "Test variables"
-      LoggingConfig:
-        LogGroup: /aws/lambda/lambda-with-docker-runtime
+#      LoggingConfig:
+#        LogGroup: /aws/lambda/lambda-with-docker-runtime
       Timeout: 30
       MemorySize: 512
       Events:
@@ -45,13 +45,13 @@ Resources:
   FastApiFunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub /aws/lambda/${FastApiFunction}
+      LogGroupName: !Sub /aws/lambda/lambda-with-docker-runtime
       RetentionInDays: 14
 
 Outputs:
-  FastAPIGateway:
+  FastAPIGatewayId:
     Value: !Ref FastAPIGateway
-  FastAPIFunction:
+  FastAPIFunctionArn:
     Value: !GetAtt FastAPIFunction.Arn
   FastAPIFunctionIamRole:
     Value: !GetAtt FastAPIFunction.Arn

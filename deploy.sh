@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Set stack name
-STACK_NAME="fastapi-with-lambda-docker-runtime-stack"
-
 # Build and deploy using SAM
 echo "Building SAM application..."
 sam build
