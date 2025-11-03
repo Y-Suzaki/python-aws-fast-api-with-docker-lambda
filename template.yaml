@@ -29,14 +29,22 @@ Resources:
 #      LoggingConfig:
 #        LogGroup: /aws/lambda/lambda-with-docker-runtime
       Timeout: 30
-      MemorySize: 512
+      MemorySize: 1024
       Events:
-        RestApiAllChildPaths:
+#        RestApiAllChildPaths:
+#          Type: Api
+#          Properties:
+#            Path: /{proxy+}
+#            Method: ANY
+#            RestApiId: !Ref FastAPIGateway
+        RestApiTaskPath:
           Type: Api
           Properties:
-            Path: /{proxy+}
+            Path: /tasks
             Method: ANY
             RestApiId: !Ref FastAPIGateway
+            Auth:
+              Authorizer: AWS_IAM
     Metadata:
       DockerTag: python3.12-v1
       DockerContext: ./
